@@ -14,6 +14,13 @@ defmodule NucleotideCount do
   """
   @spec count(charlist(), char()) :: non_neg_integer()
   def count(strand, nucleotide) do
+    length = String.length(strand)
+    case length do
+      0 -> 0
+      n when n > 0 -> strand |> String.codepoints |> Enum.map(fn(x) -> String.to_charlist(x) end) |> Enum.count(fn(x) -> (x |> hd ) == nucleotide end)
+    end
+
+    # strand |> String.codepoints |> Enum.map(fn(x) -> String.to_charlist(x) end) |> Enum.count(fn(x) -> (x |> hd ) == nucleotide end)
   end
 
   @doc """
@@ -26,5 +33,8 @@ defmodule NucleotideCount do
   """
   @spec histogram(charlist()) :: map()
   def histogram(strand) do
+    strand |> String.codepoints |> Enum.reduce(%{}, fn(char, accum) ->
+      Map.update(accum, char, 1, fn(x) -> x + 1 end
+    )end)
   end
 end
